@@ -105,7 +105,7 @@ def main():
       batch_features,batch_class = unpickle_test(file_path)
       reconstruct_class_re = reconstruct_class(batch_class,classifier)
       Gray = rgb2gray(batch_features)
-      X = np.divide(Gray, 255) #Image Downscale
+      X_input = np.divide(Gray, 255) #Image Downscale
       Y_real = np.matrix(reconstruct_class_re)
       Y_hat = sigmoid(trained_w,X_input,trained_b,Input_Test_Rows,1)
       Y_hat_reconstruct = (Y_hat > 0.5).astype(int)
