@@ -10,7 +10,7 @@ Input_Training_Rows = 10000
 
 def initialize_weights():
     Weight_init = np.random.uniform(0,1,size = (1,1025))
-    print(np.shape(Weight_init))
+    print("Init : ",np.shape(Weight_init))
     W = Weight_init[0,0:1024]
     b= Weight_init[0,1024]
     W=W.reshape(1024,1)
@@ -54,7 +54,7 @@ def rgb2gray(rgb_img):
 def run_learn(X,Y,W,b):
     alpha = 0.001
     threshold = 0.0001
-    noofepoch = 10000
+    noofepoch = 1000
     marix_norm = [1]
     combine_bias = np.full((1, Input_Training_Rows), 1)
     for epoch in range(noofepoch):
@@ -86,7 +86,7 @@ def main():
           batch_features,batch_class = unpickle(file_path,batch_id)
           reconstruct_class_re = reconstruct_class(batch_class,class_id)
           Gray = rgb2gray(batch_features)
-          X = Gray
+          X = np.divide(Gray, 255) #Image Downscale
           Y = np.matrix(reconstruct_class_re)
           W,b = run_learn(X,Y,W,b)
       weight_tensor[class_id][:][:] = W
