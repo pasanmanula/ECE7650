@@ -94,7 +94,7 @@ def main():
           batch_features,batch_class = unpickle(file_path,batch_id)
           reconstruct_class_re = reconstruct_class(batch_class,class_id)
           Gray = rgb2gray(batch_features)
-          X = Gray
+          X = np.divide(Gray, 255) #Image Downscale
           Y = np.matrix(reconstruct_class_re)
           W,b = run_learn(X,Y,W,b)
       weight_tensor[class_id][:][:] = W
@@ -113,7 +113,7 @@ def main():
       batch_features,batch_class = unpickle_test(file_path_airplane)
       reconstruct_class_re = reconstruct_class(batch_class,classifier)
       Gray = rgb2gray(batch_features)
-      X_input = Gray
+      X_input = np.divide(Gray, 255) #Image Downscale
       # Y_real = np.matrix(reconstruct_class_re)
       classi_out = sigmoid(trained_w,X_input,trained_b,Input_Test_Rows,1)
       if classifier != 0:
