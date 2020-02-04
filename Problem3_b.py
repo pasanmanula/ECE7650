@@ -57,7 +57,7 @@ def rgb2gray(rgb_img):
 def run_learn(X,Y,W,b):
     alpha = 0.001
     threshold = 0.0001
-    noofepoch = 50000
+    noofepoch = 10000
     marix_norm = [1]
     combine_bias = np.full((1, Input_Training_Rows), 1)
     for epoch in range(noofepoch):
@@ -89,7 +89,7 @@ def main():
           batch_features,batch_class = unpickle(file_path,batch_id)
           reconstruct_class_re = reconstruct_class(batch_class,class_id)
           Gray = rgb2gray(batch_features)
-          X = Gray
+          X = np.divide(Gray, 255) #Image Downscale
           Y = np.matrix(reconstruct_class_re)
           W,b = run_learn(X,Y,W,b)
       weight_tensor[class_id][:][:] = W
@@ -108,7 +108,7 @@ def main():
       batch_features,batch_class = unpickle_test(file_path)
       reconstruct_class_re = reconstruct_class(batch_class,classifier)
       Gray = rgb2gray(batch_features)
-      X_input = Gray
+      X_input = np.divide(Gray, 255) #Image Downscale
       Y_real = np.matrix(reconstruct_class_re)
       Y_hat = sigmoid(trained_w,X_input,trained_b,Input_Test_Rows,1)
       Y_hat_reconstruct = (Y_hat > 0.5).astype(int)
@@ -123,10 +123,12 @@ def main():
   for weight_m_index in range(10):
       load_weights = weight_tensor[weight_m_index][:][:]
       reconstructing_pa_1 = load_weights.transpose()
-      reconstructing_pa_2 = np.array(reconstructing_pa_1.reshape(32,32), dtype=np.uint8)
+      #Assuming linearity in the weight matrix
+      re_scale = np.interp(reconstructing_pa_1, (reconstructing_pa_1.min(), reconstructing_pa_1.max()), (0, 255))
+      reconstructing_pa_2 = np.array(re_scale.reshape(32,32), dtype=np.uint8)
       img = Image.fromarray(reconstructing_pa_2)
       print(img)
-      file_save = "Weight_Tensor_"+str(weight_m_index)+".png"
+      file_save = "Weight_Tensor_V2_"+str(weight_m_index)+".png"
       img.save(file_save)
 
 if __name__== "__main__":
